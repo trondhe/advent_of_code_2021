@@ -1,18 +1,24 @@
 pub fn solve() {
-    println!("Day 02");
+    println!("--- Day 2: Dive! ---");
     let instructions = input();
     let mut sub = Submarine::new();
     for instruction in instructions.clone() {
         sub.execute(instruction);
     }
 
-    println!("silver - horizontal position {}", sub.horizontal_position());
+    println!(
+        "\tsilver - horizontal position {}",
+        sub.horizontal_position()
+    );
 
     let mut sub = Submarine::new();
     for instruction in instructions {
         sub.execute_with_aim(instruction);
     }
-    println!("gold -  horizontal position {}", sub.horizontal_position());
+    println!(
+        "\tgold   - horizontal position {}",
+        sub.horizontal_position()
+    );
 }
 
 #[derive(Clone, Copy)]

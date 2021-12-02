@@ -1,9 +1,9 @@
 pub fn solve() {
-    println!("Day x");
+    println!("--- Day x: name ---");
 
-    println!("silver - ");
+    println!("\tsilver - ");
 
-    println!("gold - ");
+    println!("\tgold   - ");
 }
 
 #[cfg(test)]

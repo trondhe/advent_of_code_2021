@@ -6,14 +6,14 @@ fn input() -> Vec<usize> {
 }
 
 pub fn solve() {
-    println!("Day 1 sonar sweep");
+    println!("--- Day 1: Sonar Sweep ---");
     let input = input();
 
     let increases = sonar_sweep(&input);
-    println!("silver - increases {}", increases);
+    println!("\tsilver - increases {}", increases);
 
     let increases = sonar_sweep_sliding_sum(&input);
-    println!("gold - increases {}", increases);
+    println!("\tgold   - increases {}", increases);
 }
 
 fn sonar_sweep(depths: &[usize]) -> usize {
