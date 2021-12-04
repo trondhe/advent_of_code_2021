@@ -7,23 +7,33 @@ pub fn solve() {
     let (draw_numbers, board_data) = input();
     let mut boards = board_data
         .into_iter()
-        .map(|data| Board::new(&data))
+        .enumerate()
+        .map(|(index, data)| Board::with_id(index, &data))
         .collect::<Vec<Board>>();
-    let score = bingo(&draw_numbers, &mut boards);
-    println!("\tsilver - score {}", score);
+    let board_wins = bingo(&draw_numbers, &mut boards);
 
-    println!("\tgold   - ");
+    println!("\tsilver - score {}", board_wins.first().unwrap().1);
+
+    let (last_id, last_score) = {
+        let last = board_wins.last().unwrap();
+        (last.0, last.1)
+    };
+    println!("\tgold   - id {}, score {}", last_id, last_score);
 }
 
-fn bingo(draw_numbers: &Vec<u8>, boards: &mut Vec<Board>) -> usize {
+fn bingo(draw_numbers: &Vec<u8>, boards: &mut Vec<Board>) -> Vec<(usize, usize)> {
+    let mut board_wins = Vec::new();
     for number in draw_numbers {
         for board in &mut *boards {
+            if board.has_won {
+                continue;
+            }
             if let DrawResult::Win(score) = board.draw(*number) {
-                return score;
+                board_wins.push((board.id, score));
             }
         }
     }
-    0
+    board_wins
 }
 
 fn input() -> (Vec<u8>, Vec<Vec<u8>>) {
@@ -60,6 +70,8 @@ enum DrawResult {
 
 #[derive(Debug, Clone)]
 struct Board {
+    pub id: usize,
+    pub has_won: bool,
     square_size: usize,
     values: Vec<u8>,
     drawn: Vec<bool>,
@@ -74,8 +86,16 @@ impl Board {
             square_size: (data.len() as f64).sqrt() as usize,
             values: data.to_owned(),
             drawn: vec![false; data.len()],
+            id: 0,
+            has_won: false,
         };
 
+        board
+    }
+
+    pub fn with_id(id: usize, data: &[u8]) -> Self {
+        let mut board = Board::new(data);
+        board.id = id;
         board
     }
 
@@ -84,10 +104,12 @@ impl Board {
             self.drawn[index] = true;
         }
         if self.check_rows() {
+            self.has_won = true;
             return DrawResult::Win(self.calculate_score(value));
         }
 
         if self.check_columns() {
+            self.has_won = true;
             return DrawResult::Win(self.calculate_score(value));
         }
 
